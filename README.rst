@@ -7,15 +7,13 @@ drf-yasg - Yet another Swagger generator
 
 |travis| |nbsp| |codecov| |nbsp| |rtd-badge| |nbsp| |pypi-version|
 
-|bmac-button|
-
 Generate **real** Swagger/OpenAPI 2.0 specifications from a Django Rest Framework API.
 
 Compatible with
 
-- **Django Rest Framework**: 3.7.7, 3.8, 3.9
-- **Django**: 1.11, 2.0, 2.1, 2.2
-- **Python**: 2.7, 3.5, 3.6, 3.7
+- **Django Rest Framework**: 3.10, 3.11, 3.12
+- **Django**: 2.2, 3.0, 3.1
+- **Python**: 3.6, 3.7, 3.8, 3.9
 
 Only the latest patch version of each ``major.minor`` series of Python, Django and Django REST Framework is supported.
 
@@ -32,6 +30,19 @@ Resources:
 * **Live demo**: https://drf-yasg-demo.herokuapp.com/
 
 |heroku-button|
+
+
+****************
+OpenAPI 3.0 note
+****************
+
+If you are looking to add Swagger/OpenAPI support to a new project you might want to take a look at
+`drf-spectacular <https://github.com/tfranzel/drf-spectacular>`_, which is an actively maintained new library that
+shares most of the goals of this project, while working with OpenAPI 3.0 schemas.
+
+OpenAPI 3.0 provides a lot more flexibility than 2.0 in the types of API that can be described.
+``drf-yasg`` is unlikely to soon, if ever, get support for OpenAPI 3.0.
+
 
 ********
 Features
@@ -111,6 +122,7 @@ In ``settings.py``:
 
    INSTALLED_APPS = [
       ...
+      'django.contrib.staticfiles',  # required for serving swagger ui's css/js files
       'drf_yasg',
       ...
    ]
@@ -136,7 +148,7 @@ In ``urls.py``:
          license=openapi.License(name="BSD License"),
       ),
       public=True,
-      permission_classes=(permissions.AllowAny,),
+      permission_classes=[permissions.AllowAny],
    )
 
    urlpatterns = [
@@ -235,7 +247,7 @@ Offline
 ^^^^^^^
 
 If your schema is not accessible from the internet, you can run a local copy of
-`swagger-validator <https://hub.docker.com/r/swaggerapi/swagger-validator/>`_ and set the `VALIDATOR_URL` accordingly:
+`swagger-validator <https://hub.docker.com/r/swaggerapi/swagger-validator/>`_ and set the ``VALIDATOR_URL`` accordingly:
 
 .. code:: python
 
@@ -338,10 +350,6 @@ provided out of the box - if you have ``djangorestframework-recursive`` installe
 .. |rtd-badge| image:: https://img.shields.io/readthedocs/drf-yasg.svg
    :target: https://drf-yasg.readthedocs.io/
    :alt: ReadTheDocs
-
-.. |bmac-button| image:: https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png
-   :target: https://www.buymeacoffee.com/cvijdea
-   :alt: Buy Me A Coffee
 
 .. |heroku-button| image:: https://www.herokucdn.com/deploy/button.svg
    :target: https://heroku.com/deploy?template=https://github.com/axnsan12/drf-yasg

@@ -1,11 +1,9 @@
-import six
-
 import collections
 import logging
 import re
+import urllib.parse as urlparse
 from collections import OrderedDict
 
-from coreapi.compat import urlparse
 from django.urls import get_script_prefix
 from django.utils.functional import Promise
 from inflection import camelize
@@ -150,7 +148,7 @@ class SwaggerDict(OrderedDict):
             for attr, val in items:
                 result[attr] = SwaggerDict._as_odict(val, memo)
             return result
-        elif isinstance(obj, six.string_types):
+        elif isinstance(obj, str):
             return force_real_str(obj)
         elif isinstance(obj, collections_abc.Iterable) and not isinstance(obj, collections_abc.Iterator):
             return type(obj)(SwaggerDict._as_odict(elem, memo) for elem in obj)
@@ -470,7 +468,7 @@ class Schema(SwaggerDict):
         :type properties: dict[str,Schema or SchemaRef]
         :param additional_properties: allow wildcard properties not listed in `properties`
         :type additional_properties: bool or Schema or SchemaRef
-        :param list[str] required: list of requried property names
+        :param list[str] required: list of required property names
         :param items: type of array items, only valid if `type` is ``array``
         :type items: Schema or SchemaRef
         :param default: only valid when insider another ``Schema``\\ 's ``properties``;
@@ -595,7 +593,7 @@ class Response(SwaggerDict):
         """Describes the structure of an operation's response.
 
         :param str description: response description
-        :param schema: sturcture of the response body
+        :param schema: structure of the response body
         :type schema: Schema or SchemaRef or rest_framework.serializers.Serializer
             or type[rest_framework.serializers.Serializer]
         :param dict examples: example bodies mapped by mime type

@@ -18,16 +18,8 @@ def is_callable_method(cls_or_instance, method_name):
         # bound classmethod or instance method
         return method, True
 
-    try:
-        # inspect.getattr_static was added in python 3.2
-        from inspect import getattr_static
-
-        # on python 3, both unbound instance methods (i.e. getattr(cls, mth)) and static methods are plain functions
-        # getattr_static allows us to check the type of the method descriptor; for `@staticmethod` this is staticmethod
-        return method, isinstance(getattr_static(cls_or_instance, method_name, None), staticmethod)
-    except ImportError:
-        # python 2 still has unbound methods, so ismethod <=> !staticmethod TODO: remove when dropping python 2.7
-        return method, not inspect.ismethod(method)
+    from inspect import getattr_static
+    return method, isinstance(getattr_static(cls_or_instance, method_name, None), staticmethod)
 
 
 def call_view_method(view, method_name, fallback_attr=None, default=None):
@@ -276,7 +268,7 @@ class FieldInspector(BaseInspector):
         description = force_real_str(help_text) if help_text else None
         description = description if swagger_object_type != openapi.Items else None  # Items has no description either
 
-        def SwaggerType(existing_object=None, **instance_kwargs):
+        def SwaggerType(existing_object=None, use_field_title=True, **instance_kwargs):
             if 'required' not in instance_kwargs and swagger_object_type == openapi.Parameter:
                 instance_kwargs['required'] = field.required
 
@@ -285,11 +277,11 @@ class FieldInspector(BaseInspector):
                 if default not in (None, serializers.empty):
                     instance_kwargs['default'] = default
 
-            if instance_kwargs.get('type', None) != openapi.TYPE_ARRAY:
+            if use_field_title and instance_kwargs.get('type', None) != openapi.TYPE_ARRAY:
                 instance_kwargs.setdefault('title', title)
             if description is not None:
                 instance_kwargs.setdefault('description', description)
-            if field.allow_null and not instance_kwargs.get('required', False) and not field.required:
+            if field.allow_null:
                 instance_kwargs['x_nullable'] = True
 
             instance_kwargs.update(kwargs)

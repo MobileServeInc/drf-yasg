@@ -85,6 +85,7 @@ to this list.
 :class:`'drf_yasg.inspectors.ChoiceFieldInspector' <.inspectors.ChoiceFieldInspector>`, |br| \
 :class:`'drf_yasg.inspectors.FileFieldInspector' <.inspectors.FileFieldInspector>`, |br| \
 :class:`'drf_yasg.inspectors.DictFieldInspector' <.inspectors.DictFieldInspector>`, |br| \
+:class:`'drf_yasg.inspectors.JSONFieldInspector' <.inspectors.JSONFieldInspector>`, |br| \
 :class:`'drf_yasg.inspectors.HiddenFieldInspector' <.inspectors.HiddenFieldInspector>`, |br| \
 :class:`'drf_yasg.inspectors.RecursiveFieldInspector' <.inspectors.RecursiveFieldInspector>`, |br| \
 :class:`'drf_yasg.inspectors.SerializerMethodFieldInspector' <.inspectors.SerializerMethodFieldInspector>`, |br| \
@@ -168,7 +169,7 @@ LOGOUT_URL
 
 URL for the Django Logout action when using `USE_SESSION_AUTH`_.
 
-**Default**: :python:`django.conf.settings.LOGOUT_URL`
+**Default**: :python:`'/accounts/logout/'`
 
 .. _security-definitions-settings:
 
@@ -454,7 +455,7 @@ FETCH_SCHEMA_WITH_QUERY
 
 Fetch the OpenAPI document using the query parameters passed to the ReDoc page request.
 
-**Default**: :python:`'True` |br|
+**Default**: :python:`True` |br|
 *Maps to parameter*: -
 
 

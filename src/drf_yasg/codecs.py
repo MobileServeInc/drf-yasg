@@ -1,11 +1,9 @@
-from six import raise_from
-
 import copy
 import json
 import logging
 from collections import OrderedDict
 
-from coreapi.compat import force_bytes
+from django.utils.encoding import force_bytes
 from ruamel import yaml
 
 from . import openapi
@@ -24,16 +22,16 @@ def _validate_flex(spec):
     try:
         validate_flex(spec)
     except ValidationError as ex:
-        raise_from(SwaggerValidationError(str(ex)), ex)
+        raise SwaggerValidationError(str(ex)) from ex
 
 
 def _validate_swagger_spec_validator(spec):
-    from swagger_spec_validator.validator20 import validate_spec as validate_ssv
     from swagger_spec_validator.common import SwaggerValidationError as SSVErr
+    from swagger_spec_validator.validator20 import validate_spec as validate_ssv
     try:
         validate_ssv(spec)
     except SSVErr as ex:
-        raise_from(SwaggerValidationError(str(ex)), ex)
+        raise SwaggerValidationError(str(ex)) from ex
 
 
 #:
@@ -176,7 +174,14 @@ class SaneYamlDumper(yaml.SafeDumper):
                 node.flow_style = best_style
         return node
 
+    def represent_text(self, text):
+        if "\n" in text:
+            return self.represent_scalar('tag:yaml.org,2002:str', text, style='|')
+        return self.represent_scalar('tag:yaml.org,2002:str', text)
 
+
+SaneYamlDumper.add_representer(bytes, SaneYamlDumper.represent_text)
+SaneYamlDumper.add_representer(str, SaneYamlDumper.represent_text)
 SaneYamlDumper.add_representer(OrderedDict, SaneYamlDumper.represent_odict)
 SaneYamlDumper.add_multi_representer(OrderedDict, SaneYamlDumper.represent_odict)
 
